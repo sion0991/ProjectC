@@ -14,6 +14,7 @@ class URPGAttributeSet;
 class UInputMappingContext;
 class UGAS_InputConfig;
 struct FGameplayTag;
+struct FOnAttributeChangeData;
 
 UCLASS()
 class PROJECTC_API ARPGCharacter : public ACharacter, public IAbilitySystemInterface
@@ -65,8 +66,8 @@ private:
 
 protected:
 	virtual void HPChanged(const FOnAttributeChangeData& Data);
-	UFUNCTION(BlueprintCallable, Category = Attribute)
-	void UpdateHP(const float NewHP);
+	UFUNCTION(BlueprintImplementableEvent, Category = Attribute)
+	void Death();
 	UFUNCTION(BlueprintCallable, Category = Attribute)
 	void AttackToTarget(ARPGCharacter* Target, TSubclassOf<UGameplayEffect> GameplayEffectClass);
 

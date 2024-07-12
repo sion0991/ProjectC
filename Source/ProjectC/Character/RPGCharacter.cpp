@@ -15,6 +15,14 @@ ARPGCharacter::ARPGCharacter()
 	PrimaryActorTick.bAllowTickOnDedicatedServer = true;
 
 	OverrideInputComponentClass = URPGEnhancedInputComponent::StaticClass();
+
+	AbilitySystemComponent = CreateDefaultSubobject<URPGAbilitySystemComponent>(TEXT("AbilitySystemComponent"));
+	AbilitySystemComponent->SetIsReplicated(true);
+	AbilitySystemComponent->SetReplicationMode(EGameplayEffectReplicationMode::Mixed);
+
+	AttributeSet = CreateDefaultSubobject<URPGAttributeSet>(TEXT("AttributeSet"));
+
+	NetUpdateFrequency = 100.0f;
 }
 
 void ARPGCharacter::InitializeAttributes()
@@ -57,10 +65,10 @@ void ARPGCharacter::HPChanged(const FOnAttributeChangeData& Data)
 {
 	float HP = Data.NewValue;
 	UE_LOG(LogTemp, Warning, TEXT("HP Change : %f"), HP);
-
-}
-void ARPGCharacter::UpdateHP(const float NewHP)
-{
+	if (HP <= 0)
+	{
+		Death();
+	}
 }
 
 void ARPGCharacter::AttackToTarget(ARPGCharacter* Target, TSubclassOf<UGameplayEffect> GameplayEffectClass)
@@ -88,7 +96,7 @@ void ARPGCharacter::PossessedBy(AController* NewController)
 {
 	Super::PossessedBy(NewController);
 
-	ARPGPlayerState* PS = GetPlayerState<ARPGPlayerState>();
+	/*ARPGPlayerState* PS = GetPlayerState<ARPGPlayerState>();
 	if (PS)
 	{
 		AbilitySystemComponent = Cast<URPGAbilitySystemComponent>(PS->GetAbilitySystemComponent());
@@ -97,17 +105,22 @@ void ARPGCharacter::PossessedBy(AController* NewController)
 
 		InitializeAttributes();
 		GiveAbilities();
-	}
+	}*/
+	AbilitySystemComponent->InitAbilityActorInfo(this, this);
+	InitializeAttributes();
+	GiveAbilities();
+
+	SetOwner(NewController);
 }
 
 void ARPGCharacter::OnRep_PlayerState()
 {
-	ARPGPlayerState* PS = GetPlayerState<ARPGPlayerState>();
+	/*ARPGPlayerState* PS = GetPlayerState<ARPGPlayerState>();
 	if (PS)
 	{
 		AbilitySystemComponent = Cast<URPGAbilitySystemComponent>(PS->GetAbilitySystemComponent());
 		AbilitySystemComponent->InitAbilityActorInfo(PS, this);
-	}
+	}*/
 }
 
 void ARPGCharacter::InputAbilitySystemInputTagPressed(FGameplayTag InputTag)

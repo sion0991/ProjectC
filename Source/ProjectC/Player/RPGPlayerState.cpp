@@ -8,13 +8,7 @@
 ARPGPlayerState::ARPGPlayerState(const FObjectInitializer& ObjectInitializer)
 	: Super(ObjectInitializer)
 {
-	AbilitySystemComponent = CreateDefaultSubobject<URPGAbilitySystemComponent>(TEXT("AbilitySystemComponent"));
-	AbilitySystemComponent->SetIsReplicated(true);
-	AbilitySystemComponent->SetReplicationMode(EGameplayEffectReplicationMode::Mixed);
-
-	AttributeSet = CreateDefaultSubobject<URPGAttributeSet>(TEXT("AttributeSet"));
-
-	NetUpdateFrequency = 100.f;
+	//NetUpdateFrequency = 100.f;
 }
 
 APlayerController* ARPGPlayerState::GetRPGPlayerController() const
@@ -22,7 +16,7 @@ APlayerController* ARPGPlayerState::GetRPGPlayerController() const
 	return Cast<APlayerController>(GetOwningController());
 }
 
-UAbilitySystemComponent* ARPGPlayerState::GetAbilitySystemComponent() const
-{
-	return AbilitySystemComponent;
-}
+//UAbilitySystemComponent* ARPGPlayerState::GetAbilitySystemComponent() const
+//{
+//	return AbilitySystemComponent;
+//}
