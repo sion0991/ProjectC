@@ -16,5 +16,9 @@ public:
 	UPROPERTY(EditAnywhere, BlueprintReadOnly)
 	int Character;
 	UPROPERTY(EditAnywhere, BlueprintReadOnly)
+	int Position;
+	UPROPERTY(EditAnywhere, BlueprintReadOnly)
 	int Formation;
+	UPROPERTY(EditAnywhere, BlueprintReadOnly)
+	int Group;
 };
