@@ -64,7 +64,6 @@ void ARPGCharacter::GiveAbilities()
 void ARPGCharacter::HPChanged(const FOnAttributeChangeData& Data)
 {
 	float HP = Data.NewValue;
-	UE_LOG(LogTemp, Warning, TEXT("HP Change : %f"), HP);
 	if (HP <= 0)
 	{
 		Death();
