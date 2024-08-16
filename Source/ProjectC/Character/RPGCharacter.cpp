@@ -25,6 +25,11 @@ ARPGCharacter::ARPGCharacter()
 	NetUpdateFrequency = 100.0f;
 }
 
+void ARPGCharacter::SetTroopLocation(FVector _TroopLocation)
+{
+	TroopLocation = _TroopLocation;
+}
+
 void ARPGCharacter::InitializeAttributes()
 {
 	if (AbilitySystemComponent)

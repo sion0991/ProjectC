@@ -85,3 +85,16 @@ void UDataTableManager::AddFormationRow(FName RowName, FST_Formation Row, UDataT
 {
 	DataTable->AddRow(RowName, Row);
 }
+
+void UDataTableManager::ResetDataTable(UDataTable* DataTable)
+{
+	DataTable->EmptyTable();
+}
+
+//void UDataTableManager::GetAllRowAtDataTable(UDataTable* DataTable, TArray<T>& Rows)
+//{
+//	for (auto p : DataTable->GetRowNames())
+//	{
+//		Rows.Add(*DataTable->FindRow<T>(p, FString("")));
+//	}
+//}
