@@ -13,6 +13,8 @@ UUnitGroup::UUnitGroup()
 	TroopWidth = 2000.f;
 	IsTroopSet = false;
 	GroupTransform = FTransform::Identity;
+	Interval = 0;
+	StartX = 0;
 }
 
 void UUnitGroup::Tick(float DeltaTime)
@@ -62,8 +64,8 @@ void UUnitGroup::LocationSetting()
 	}
 	else
 	{
-		float Interval = TroopWidth / (NumOfTroop-1);
-		float StartX = -TroopWidth / 2.f;
+		Interval = TroopWidth / (NumOfTroop-1);
+		StartX = -TroopWidth / 2.f;
 		for (int i = 0; i < NumOfTroop; i++)
 		{
 			float PosX = StartX + i * Interval;
@@ -93,9 +95,22 @@ void UUnitGroup::CalculationDir(FVector Target)
 	GroupTransform.SetLocation(Target);
 }
 
-FVector UUnitGroup::CalculateTroopLocation(int index)
+//FVector UUnitGroup::CalculateTroopLocation(int index)
+//{
+//	return GroupTransform.GetRotation().GetNormalized() * FVector(0, PosXs[index],0);
+//}
+
+FVector UUnitGroup::CalculateTroopLocation(int index, int Formation)
 {
-	return GroupTransform.GetRotation().GetNormalized() * FVector(0, PosXs[index],0);
+	FVector Offset = Formations[Formation];
+	if (Formation == 2)
+	{
+		Offset.Y *= index % 2 == 1 ? -1 : 1;
+		Offset *= FMath::CeilToInt(index / 2.f) * Interval;
+		GEngine->AddOnScreenDebugMessage(-1, 5.f, FColor::Yellow, FString::Printf(TEXT("%f"), FMath::CeilToDouble(index / 2.f)));
+		return GroupTransform.GetRotation().GetNormalized() * Offset;
+	}
+	return GroupTransform.GetRotation().GetNormalized() * Offset * PosXs[index];
 }
 
 void UUnitGroup::SelectGroop()
@@ -106,14 +121,25 @@ void UUnitGroup::SelectGroop()
 	}
 }
 
-void UUnitGroup::GroupMove(FVector Location)
+//void UUnitGroup::GroupMove(FVector Location)
+//{
+//	CalculationDir(Location);
+//
+//	for (int i = 0; i < Troops.Num(); i++)
+//	{
+//		FVector NewLocation = Location + CalculateTroopLocation(i);
+//		Troops[i]->GetController()->FindComponentByClass<UBlackboardComponent>()->SetValueAsVector(FName(TEXT("TargetLocation")), NewLocation);
+//		Troops[i]->SetTroopLocation(NewLocation);
+//	}
+//}
+
+void UUnitGroup::GroupMove(FVector Location, int Formation)
 {
 	CalculationDir(Location);
-
 	for (int i = 0; i < Troops.Num(); i++)
 	{
-		FVector NewLocation = Location + CalculateTroopLocation(i);
-		Troops[i]->GetController()->FindComponentByClass<UBlackboardComponent>()->SetValueAsVector(FName(TEXT("TargetLocation")), NewLocation);
+		FVector NewLocation = Location + CalculateTroopLocation(i, Formation);
+		GetBlackboardAsTroop(Troops[i])->SetValueAsVector(FName(TEXT("TargetLocation")), NewLocation);
 		Troops[i]->SetTroopLocation(NewLocation);
 	}
 }
@@ -125,6 +151,11 @@ void UUnitGroup::SetEnemy(ARPGCharacter* _Enemy)
 	{
 		Troop->SetEnemy(_Enemy);
 	}
+}
+
+UBlackboardComponent* UUnitGroup::GetBlackboardAsTroop(ARPGCharacter* Target)
+{
+	return Target->GetController()->FindComponentByClass<UBlackboardComponent>();
 }
 
 //UBlackboardComponent* UUnitGroup::GetBlackboard(ARPGCharacter* Target)

@@ -31,12 +31,16 @@ public:
     void AddTroop(ARPGCharacter* Troop);
     UFUNCTION(BlueprintCallable, Category = "Group")
     void CalculationDir(FVector Target);
+    /*UFUNCTION(BlueprintCallable, Category = "Group")
+    FVector CalculateTroopLocation(int index);*/
     UFUNCTION(BlueprintCallable, Category = "Group")
-    FVector CalculateTroopLocation(int index);
+    FVector CalculateTroopLocation(int index, int Formation =0);
     UFUNCTION(BlueprintCallable, Category = "Group")
     void SelectGroop();
-    UFUNCTION(BlueprintCallable, Category= "Group")
-    void GroupMove(FVector Location);
+    /*UFUNCTION(BlueprintCallable, Category= "Group")
+    void GroupMove(FVector Location);*/
+    UFUNCTION(BlueprintCallable, Category = "Group")
+    void GroupMove(FVector Location,int Formation =0);
 
     UFUNCTION(BlueprintCallable, Category = "Group")
     void SetEnemy(ARPGCharacter* _Enemy);
@@ -55,9 +59,16 @@ protected:
     UPROPERTY(VisibleAnywhere, BlueprintReadWrite, Category = "Troop")
     FTransform GroupTransform;
 private:
-    //UBlackboardComponent* GetBlackboard(ARPGCharacter* Target);
+    UBlackboardComponent* GetBlackboardAsTroop(ARPGCharacter* Target);
+    float Interval;
+    float StartX;
     TArray<float> PosXs;
-    
+    TArray<FVector> Formations =
+    {
+        FVector(0.f,1.f,0.f),
+        FVector(1.f,0.f,0.f),
+        FVector(-1.f,1.f,0.f)
+    };
     UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Enemy", meta = (AllowPrivateAccess = "true"))
     ARPGCharacter* Enemy;
 
